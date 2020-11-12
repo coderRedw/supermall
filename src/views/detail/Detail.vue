@@ -4,6 +4,11 @@
     <scroll class="content"
             ref="scroll"
             @scroll="contentScroll" :probe-type="3">
+      <ul>
+        <li v-for="item in $store.state.cartList">
+          {{item}}
+        </li>
+      </ul>
       <detail-swiper :top-images="topImages"/>
       <detail-base-info :goods="goods"/>
       <detail-shop :shop="shopInfo"/>
@@ -187,6 +192,9 @@
         product.title = this.goodsInfo.title;
         product.price = this.goodsInfo.realPrice
         product.iid = this.iid
+
+        // this.$store.state.cartList.push(product)
+        this.$store.commit('addCart',product)
       }
     }
   }
