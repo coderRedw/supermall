@@ -19,6 +19,7 @@
     </scroll>
     <back-top @click.native="backClick" v-show="isShowBackTop"/>
     <detail-bottom-bar @addToCart="addToCart"/>
+    <toast :message="哈哈哈" :isShow="isShow"/>
   </div>
 </template>
 
@@ -32,11 +33,13 @@
   import DetailCommendInfo from "./childComps/DetailCommendInfo";
   import DetailBottomBar from "./childComps/DetailBottomBar";
   import BackTop from "components/content/backTop/BackTop";
+  import Toast from "components/common/toast/Toast";
 
   import Scroll from "components/common/scroll/Scroll"
   import GoodsList from "components/content/goods/GoodsList";
   import {debounce} from "common/utils"
   import {itemListenerMixin, backTopMixin} from "common/mixin"
+  import {mapActions} from 'vuex'
 
   import {getDetail, Goods, Shop, GoodsParam, getRecommend} from "network/detail";
 
@@ -53,7 +56,8 @@
       DetailCommendInfo,
       BackTop,
       Scroll,
-      GoodsList
+      GoodsList,
+      Toast
     },
     data() {
       return {
@@ -69,6 +73,8 @@
         themeTopYs: [],
         getThemeTopYs: [],
         currentIndex: 0,
+        message: '',
+        isShow: false
       }
     },
     mixins: [itemListenerMixin, backTopMixin],
@@ -146,6 +152,7 @@
       this.$bus.$off('itemImgLoad',this.itemImgListener)
     },
     methods: {
+      ...mapActions(['addCart']),
       detailImageLoad() {
         // let refresh = debounce(this.$refs.scroll,refresh,200)
         // refresh()    //https://www.bilibili.com/video/BV17j411f74d?p=204  不能够这样写
@@ -194,7 +201,21 @@
         product.iid = this.iid
 
         // this.$store.state.cartList.push(product)
-        this.$store.commit('addCart',product)
+        // this.$store.commit('addCart',product)
+        this.addCart(product).then(res => {
+        //   this.message = res
+        //   this.isShow = true
+        //
+        //   setTimeout(() => {
+        //     this.message = ''
+        //     this.isShow = false
+        //   },1500)
+          this.$toast.show(res, 2000)
+        })   //相比下面的你只是把他封装到了mapActions,效果是一样的
+
+        // this.$store.dispatch('addCart',product).then(res => {
+        //   console.log(res)
+        // })
       }
     }
   }
